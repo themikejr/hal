@@ -5,6 +5,8 @@ import os
 from getpass import getpass
 from dotenv import load_dotenv
 
+import logging
+
 from haystack.telemetry import tutorial_running
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack.components.embedders import SentenceTransformersDocumentEmbedder
@@ -18,6 +20,12 @@ from haystack import Pipeline
 
 # Load environment variables
 load_dotenv()
+
+# Add more logging
+# logging.basicConfig(
+#     format="%(levelname)s - %(name)s -  %(message)s", level=logging.WARNING
+# )
+# logging.getLogger("haystack").setLevel(logging.INFO)
 
 doc_embedder = SentenceTransformersDocumentEmbedder(
     model="sentence-transformers/all-MiniLM-L6-v2"
@@ -67,6 +75,8 @@ prompt_builder = PromptBuilder(template=template)
 
 if "OPENAI_API_KEY" not in os.environ:
     os.environ["OPENAI_API_KEY"] = getpass("Enter OpenAI API key:")
+# To hit a model hosted locally by LM Studio:
+# add param: api_base_url="http://localhost:1234/v1"
 generator = OpenAIGenerator(model="gpt-4o-mini")
 
 basic_rag_pipeline = Pipeline()
